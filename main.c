@@ -15,10 +15,27 @@ int int2 = 000000;
 
 int UMin = 0;       // probably always.
 int UMax = 1;
+int TMin = 0;
+int NegOne = -1;
+int TMax = 0;
 
-char str_hex[8];
+char UMax_strHex[8];
+char UMax_strBin[8];
+char UMin_strHex[8];
+char UMin_strBin[8];
+char NegOne_strHex[8];
+char NegOne_strBin[8];
+char TMin_strHex[8];
+char TMax_strBin[8];
+char TMax_strHex[8];
+char TMax_strBin[8];
+
 
 void decToHex(int dec, char *str);
+void calcUMin_strHex(char *str);
+void calcUMin_strBin(char *str);
+void calcUMax_strHex(char *str);
+void calcUMax_strBin(char *str);
 void printResults();
 
 int main() {
@@ -34,18 +51,17 @@ int main() {
 		scanf("%i", &totalNumBits);
 	 }
 
-
-
-    // calc UMax, ( 2 to the power of n ) - 1
-    int i;
-    for ( i=1; i <= totalNumBits; i++ ) { UMax *= 2; }
-    UMax--;
+    calcUMax(totalNumBits);
 
     printf("UMax: %d\n", UMax);
 
-	decToHex(UMax, str_hex);
+	decToHex(UMax, UMax_strHex);
+    calcUMin_strHex(UMin_strHex);
+    calcUMin_strBin(UMin_strBin);
+    calcUMax_strBin(UMax_strBin);
+    calcTMin_strHex(TMin_strHex);
 
-    printf("str_hex : 0x%s\n", str_hex);
+    printf("str_hex : 0x%s\n", UMax_strHex);
 
     printResults();
 
@@ -57,7 +73,7 @@ int main() {
 	UMin	0	0x00	00000
 	UMax	31	0x1F	11111
 	TMin	-16	0x10	10000
-	-1	-1	0x1F	11111
+	-1	    -1	0x1F	11111
 	TMax	15	0x0F	01111
 
 	Please enter the number of exponent bits: 
@@ -89,6 +105,66 @@ int main() {
 /**
  *
  */
+int calcUMax(int totalNumBits) {
+
+    // calc UMax, ( 2 to the power of n ) - 1
+    int umax;
+    int i;
+    for ( i=1; i <= totalNumBits; i++ ) { umax *= 2; }
+    umax--;
+
+    return umax;
+}
+
+/**
+ *
+ */
+void calcUMin_strHex(char *str) {
+
+}
+
+/**
+ *
+ */
+void calcUMin_strBin(char *str) {
+    //
+    int i;
+    for ( i=0; i<totalNumBits; i++ ) {
+        str[i] = '0';
+    }
+}
+
+void calcUMax_strBin(char *str) {
+    //
+    int i;
+    for ( i=0; i<totalNumBits; i++ ) {
+        str[i] = '1';
+    }
+}
+
+/**
+ *
+ */
+void calcTMin_strHex(char *str) {
+    //UMax / 2, * -1
+
+}
+
+/**
+ *
+ */
+void calcTMin_strBin(char *str) {
+    //
+    int i;
+    for ( i=0; i<totalNumBits; i++ ) {
+        if (i==0) str[i] = '1';
+        else str[i] = '0';
+    }
+}
+
+/**
+ *
+ */
 void decToHex(int dec, char *str) { sprintf( str, "%X", dec); }
 
 /**
@@ -98,12 +174,15 @@ void printResults() {
 
     printf("totalNumBits : %i\n ", totalNumBits );
 
-    printf("sizeof(unsigned int) : %lu \n", sizeof(unsigned int) );
+    //printf("sizeof(unsigned int) : %lu \n", sizeof(unsigned int) );
 
     printf("For %i bits:\n", totalNumBits);
     printf("Number\tDecimal\tHex\tBinary\n");
-    printf("UMin\t0\t0x00\t000000\n");
-    printf("UMax\t%i\t0x%s\t111111\n", UMax, str_hex);
+    printf("UMin\t%i\t0x%s\t%s\n", UMin, UMin_strHex, UMin_strBin );
+    printf("UMax\t%i\t0x%s\t%s\n", UMax, UMax_strHex, UMax_strBin);
+    printf("TMin\t%i\t0x%s\t%s\n", TMin, TMin_strHex, TMax_strBin);
+    printf("-1\t%i\t0x%s\t%s\n", NegOne, NegOne_strHex, NegOne_strBin);
+    printf("TMax\t%i\t0x%s\t%s\n", TMax, TMax_strHex, TMax_strBin);
 
 }
 

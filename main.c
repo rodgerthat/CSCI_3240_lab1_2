@@ -1,21 +1,25 @@
 /********************************************************************
 *
-* File : main.c
-* Author : Norris, Joel R. 
-* Date : 
+ * File : main.c
+ * Author : Norris, Joel R.
+ * Date : 2016_02_18
+ * Class : CSCI_3240
 * 
 ********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 
-int totalNumberOfBits;
+int totalNumberOfBits;      // user input variable
 
+// initialize variables
 int UMin = 0;       // probably always.
 int UMax = 1;
 int TMin = 0;
-int NegOne = -1;
+int NegOne = -1;    // probably always.
 int TMax = 0;
 
+// char arrays for strings, in hex and binary
 char UMax_strHex[32];
 char UMax_strBin[32];
 char UMin_strHex[32];
@@ -27,6 +31,7 @@ char NegOne_strBin[32];
 char TMax_strHex[32];
 char TMax_strBin[32];
 
+// function prototypes
 void calcUMin_strHex(char *str);
 void calcUMin_strBin(char *str);
 int calcUMax(int totNumBits);
@@ -46,7 +51,7 @@ void printResults();
 int main() {
 	
 	// get user input
-	printf("%s", "Please enter total number of bits:");
+	printf("%s", "Please enter total number of bits:\n");
 	scanf("%i", &totalNumberOfBits);
 
 	// input validation, tyty CSCI_1170
@@ -56,6 +61,7 @@ int main() {
 		scanf("%i", &totalNumberOfBits);
 	 }
 
+    // calculate conversions for data
     //calcUMin  // lol nope.
     calcUMin_strHex(UMin_strHex);
     calcUMin_strBin(UMin_strBin);
@@ -71,7 +77,7 @@ int main() {
     calcTMax_strHex(TMax, TMax_strHex);
     calcTMax_strBin(TMax_strBin);
 
-    printResults();
+    printResults();     // make it so.
 
 	/**
 	Please enter the total number of bits: 
@@ -111,7 +117,9 @@ int main() {
 }
 
 /**
- *
+ * calcUMin_strHex
+ * create a string of characters that's a hexadecimal representation
+ * of the unsigned minimum
  */
 void calcUMin_strHex(char *str) {
     // moar shenanigans...
@@ -127,7 +135,9 @@ void calcUMin_strHex(char *str) {
 }
 
 /**
- *
+ *  calcUMin_strBin
+ *  create a string of characters that's a binary representation
+ *  of the unsigned minimum
  */
 void calcUMin_strBin(char *str) {
     //
@@ -138,25 +148,29 @@ void calcUMin_strBin(char *str) {
 }
 
 /**
- *
+ *  calcUMax
+ *  calculate the Unsigned Maximum decimal integer
+ *  that can be represented using a given number of bits
+ *  uses bit shifting.
  */
 int calcUMax(int totNumBits) {
 
-    // calc UMax, ( 2 to the power of n ) - 1
-    int umax = 1;
-    int i;
-    for ( i=0; i < totNumBits; i++ ) { umax *= 2; }
-    umax--;
-
+    int umax = 1 << totNumBits;     // left shift by the total number of bits,
+    umax--;                         // minus one, to account for 0
     return umax;
 }
 
+/**
+ * calcUMax_strHex
+ * convert UMax to hexadecimal string
+ */
 void calcUMax_strHex(int umax, char *str) {
     decToHex(umax, str);
 }
 
 /**
- *
+ *  calcUMax_strBin
+ *  create string of characters to represent binary unsigned maximum
  */
 void calcUMax_strBin(char *str) {
     //
@@ -167,7 +181,8 @@ void calcUMax_strBin(char *str) {
 }
 
 /**
- *
+ *  calcTMin
+ *  calculate two's compliment minimum value
  */
 int calcTMin(int umax) {
     int tmin = ( ( umax + 1 ) / 2 ) * -1;    // wonk.
@@ -176,16 +191,19 @@ int calcTMin(int umax) {
 
 
 /**
- *
+ *  calcTMin_strHex
+ *  create character array of hexadecimal representation of
+ *  signed two's compliment minimum value
  */
 void calcTMin_strHex(int tmin, char *str) {
     tmin *= -1;
-    decToHex(tmin, str);
-
+    decToHex(tmin, str);    // nothing to see here, move along.
 }
 
 /**
- *
+ *  calcTMin_strBin
+ *  create char array of binary representation
+ *  of signed two's compliment minimum value
  */
 void calcTMin_strBin(char *str) {
     // I'm only cheating myself :(
@@ -197,14 +215,17 @@ void calcTMin_strBin(char *str) {
 }
 
 /**
- *
+ * calcNegOne_strHex
+ * create ... wait a min. that's going to be the same all the time.
+ * printf("%s", ftw");
  */
 void calcNegOne_strHex(char *str) {
 
 }
 
 /**
- *
+ * calcNegOne_strBin
+ * create char array of binary representation for -1
  */
 void calcNegOne_strBin(char *str) {
     int i;
@@ -214,7 +235,8 @@ void calcNegOne_strBin(char *str) {
 }
 
 /**
- *
+ *  calcTMax
+ *  signed maximum two's compliment, always half of unsigned maximum
  */
 int calcTMax(int umax) {
     int tmax = umax / 2;
@@ -222,14 +244,16 @@ int calcTMax(int umax) {
 }
 
 /**
- *
+ *  calcTMax_strHex
+ *  create hexadecimal string representation of two's compliment maximum
  */
 void calcTMax_strHex(int tmax, char *str) {
     decToHex(tmax, str);
 }
 
 /**
- *
+ * calcTMax_strBin
+ * create char array of binary representation of two's compliment maximum
  */
 void calcTMax_strBin(char *str) {
 
@@ -244,12 +268,15 @@ void calcTMax_strBin(char *str) {
 
 
 /**
- *
+ *  decToHex
+ *  where the magic happens.
+ *  thx whoever wrote sprintf for handling signed integers.
  */
 void decToHex(int dec, char *str) { sprintf( str, "%X", dec); }
 
 /**
- *
+ * printResults()
+ * prints out the results according to the spec
  */
 void printResults() {
 

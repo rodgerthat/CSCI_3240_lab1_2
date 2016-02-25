@@ -1,17 +1,23 @@
 Points       Item
 ----------   --------------------------------------------------------------
-_____ / 10   Documentation (applies to new and modified files):
+_5___ / 10   Documentation (applies to new and modified files):
              All source code files (.h & .c) include file name, author, description etc.
              Functions and variables
              + All non-trival variables are commented
              + All functions preceded by brief comments
              + Comments included before major portions of code
              + Functions should be no longer than 1 page
-_____ / 88   Correct output (matches the format of the example & demonstrates correct execution)
+_44__ / 88   Correct output (matches the format of the example & demonstrates correct execution)
 _____ /  0   Compiles and runs on system64
-_____ /  2   Completed rubric (estimates for each line including hours spent)
+_2___ /  2   Completed rubric (estimates for each line including hours spent)
                                                                         
-_____ /100   Total
+_51__ /100   Total
 
 
-_____  Approximate number of hours spent
+_4__  Approximate number of hours spent
+
+
+// halfway there, albeit cheatsy, 
+// I plan to clean it up, make some stuff right
+// and finish the floating point tomorrow 
+// for the 90%

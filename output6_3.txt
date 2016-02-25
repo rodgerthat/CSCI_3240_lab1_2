@@ -1,0 +1,8 @@
+Please enter total number of bits:totalNumBits : 6
+ For 6 bits:
+Number	Decimal	Hex	Binary
+UMin	0	0x00	000000
+UMax	63	0x3F	111111
+TMin	-32	0x20	100000
+-1	-1	0x3F	111111
+TMax	31	0x1F	011111

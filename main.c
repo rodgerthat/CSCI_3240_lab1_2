@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int totalNumberOfBits;      // user input variable
+int totalNumberOfBits;          // user input variable for total number of bits
+int totalNumberOfExponentBits;  // user input variable for total number of exponent bits
+int totalNumberOfFracBits;      // variable to hold the total number of frac bits
 
 // initialize variables
 int UMin = 0;       // probably always.
@@ -18,6 +20,11 @@ int UMax = 1;
 int TMin = 0;
 int NegOne = -1;    // probably always.
 int TMax = 0;
+int e;
+int f;
+int Bias = 0;
+float M;
+float V;
 
 // char arrays for strings, in hex and binary
 char UMax_strHex[32];
@@ -47,6 +54,13 @@ void calcTMax_strHex(int tmax, char *str);
 void calcTMax_strBin(char *str);
 void decToHex(int dec, char *str);
 void printResults();
+void printFloatingPointResults();
+
+int calcBias(int totNumBits);
+float calcM(int totalNumBits );
+float calcV(float M, int E);
+
+void convDecToBinStr(int dec);
 
 int main() {
 	
@@ -78,6 +92,7 @@ int main() {
     calcTMax_strBin(TMax_strBin);
 
     printResults();     // make it so.
+    printFloatingPointResults();
 
 	/**
 	Please enter the total number of bits: 
@@ -155,6 +170,7 @@ void calcUMin_strBin(char *str) {
  */
 int calcUMax(int totNumBits) {
 
+    // #TODO: make sure it can handle negative numbers
     int umax = 1 << totNumBits;     // left shift by the total number of bits,
     umax--;                         // minus one, to account for 0
     return umax;
@@ -293,4 +309,106 @@ void printResults() {
     printf("TMax\t%i\t0x%s\t%s\n", TMax, TMax_strHex, TMax_strBin);
 
 }
+
+/**
+ * calcBias
+ * Bias = (2^(k-1)) - 1
+ * k = total number of exponent bits
+ */
+int calcBias(int totNumExpBits) {
+
+    int bias = ( 1 << (totNumExpBits - 1) ) - 1;     // left shift by the total number of bits,
+    return bias;
+}
+
+/**
+ *
+ */
+float calcM(int totalNumBits ) {
+    //1 + numFracBits
+}
+
+/**
+ *
+ */
+float calcV(float M, int E) {
+    //float V =
+}
+
+char binStr[32];
+void convDecToBinStr(int dec) {
+    int q;
+    int r;
+    int i = 0;
+    q = dec/2;
+    r = dec%2;
+    binStr[i] = (char) r;
+    while ( q != 0  ) {
+        i++;
+        q = dec / 2;
+        r = dec % 2;
+        binStr[i] = (char) r;
+    }
+
+}
+
+/**
+ *
+ */
+void printFloatingPointResults() {
+    // V = (-1)^s * m * 2^E
+
+    printf("%s", "Please enter the number of exponent bits:\n");
+    scanf("%i", &totalNumberOfExponentBits);
+
+    // calc num frac bits
+    totalNumberOfFracBits = (totalNumberOfBits - totalNumberOfExponentBits) - 1;     // -1 for the Signed Bit
+
+    printf("Positive floating point values for %i Exp bits and %i Frac bits:\n", totalNumberOfExponentBits, totalNumberOfFracBits );
+    printf("%s", "S Exp Frac Value");
+    printf("%s", "0 ");     // signed bit.
+    int eMax = 1 << totalNumberOfExponentBits;
+    int fMax = 1 << totalNumberOfFracBits;
+
+    int i;
+    int j;
+    // loop thru exp bits
+    for ( i=0; i<eMax; i++) {
+
+        convDecToBinStr(i);
+        printf("%s", binStr);
+
+        // loop thru frac bits
+        for (j=0; j<fMax; j++) {
+
+            convDecToBinStr(j);
+            printf("%s", binStr);
+
+            // check special cases
+
+            // if ( e == 0 && frac == 0 )
+                // V = inf;
+                printf("%s", "inf");
+            // if ( e == (2^k)
+                // V == NaN
+                printf("%s", "NaN");
+
+            // if normalized
+            // if ( e != 0 && e != 2^k )
+                // calc V
+
+            // denormalized
+            // else
+                // calc V
+        }
+
+    }
+
+}
+
+
+
+
+
+
 

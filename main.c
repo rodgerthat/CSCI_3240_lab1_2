@@ -10,21 +10,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int totalNumberOfBits;          // user input variable for total number of bits
-int totalNumberOfExponentBits;  // user input variable for total number of exponent bits
-int totalNumberOfFracBits;      // variable to hold the total number of frac bits
+int n;                      // user input variable for total number of bits
+int binArray[32] = {0};     // array of intergers for decimal / binary conversion
 
 // initialize variables
 int UMin = 0;       // probably always.
 int UMax = 1;
 int TMin = 0;
-int NegOne = -1;    // probably always.
+int NegOne = -1;    // always.
 int TMax = 0;
-int e;
-int f;
-int Bias = 0;
-float M;
-float V;
 
 // char arrays for strings, in hex and binary
 char UMax_strHex[32];
@@ -55,31 +49,26 @@ void calcTMax_strBin(char *str);
 void decToHex(int dec, char *str);
 void printResults();
 void printFloatingPointResults();
-
-int calcBias(int totNumBits);
-float calcM(int totalNumBits );
-float calcV(float M, int E);
-
-void convDecToBinStr(int dec);
+void intToBinArray(int dec, int *binArray);
 
 int main() {
 	
 	// get user input
 	printf("%s", "Please enter total number of bits:\n");
-	scanf("%i", &totalNumberOfBits);
+	scanf("%i", &n);
 
 	// input validation, tyty CSCI_1170
-	 while (totalNumberOfBits < 2 || totalNumberOfBits > 32) {
+	 while (n < 2 || n > 32) {
 		printf("%s", "Input must be a number between 2 and 32\n\n");
 		printf("%s", "Please enter total number of bits:");
-		scanf("%i", &totalNumberOfBits);
+		scanf("%i", &n);
 	 }
 
     // calculate conversions for data
     //calcUMin  // lol nope.
     calcUMin_strHex(UMin_strHex);
     calcUMin_strBin(UMin_strBin);
-    UMax = calcUMax(totalNumberOfBits);
+    UMax = calcUMax(n);
     calcUMax_strHex(UMax, UMax_strHex);
     calcUMax_strBin(UMax_strBin);
     TMin = calcTMin(UMax);
@@ -94,39 +83,6 @@ int main() {
     printResults();     // make it so.
     printFloatingPointResults();
 
-	/**
-	Please enter the total number of bits: 
-
-	For 5 bits:
-	Number	Decimal	Hex	Binary
-	UMin	0	0x00	00000
-	UMax	31	0x1F	11111
-	TMin	-16	0x10	10000
-	-1	    -1	0x1F	11111
-	TMax	15	0x0F	01111
-
-	Please enter the number of exponent bits: 
-	...
-	**/
-
-
-
-
-	/**
-	Please enter the total number of bits: 
-
-	For 32 bits:
-	Number	Decimal	Hex	Binary
-	UMin	0	0x00000000	00000000000000000000000000000000
-	UMax	0	0x00000000	00000000000000000000000000000000
-	TMin	-2147483648	0x80000000	10000000000000000000000000000000
-	-1	-1	0xFFFFFFFF	11111111111111111111111111111111
-	TMax	2147483647	0x7FFFFFFF	01111111111111111111111111111111
-
-	Please enter the number of exponent bits: 
-	...
-	**/
-
 	return 0;
 
 }
@@ -140,9 +96,9 @@ void calcUMin_strHex(char *str) {
     // moar shenanigans...
     int i;
     int bitDepthMimic = 0;
-    if (totalNumberOfBits <= 8) { bitDepthMimic = 2;
-    } else if (totalNumberOfBits <=16) { bitDepthMimic = 4;
-    } else if (totalNumberOfBits <= 32) { bitDepthMimic = 8;
+    if (n <= 8) { bitDepthMimic = 2;
+    } else if (n <= 16) { bitDepthMimic = 4;
+    } else if (n <= 32) { bitDepthMimic = 8;
     } else {
         // do something
     }
@@ -157,7 +113,7 @@ void calcUMin_strHex(char *str) {
 void calcUMin_strBin(char *str) {
     //
     int i;
-    for ( i=0; i < totalNumberOfBits; i++ ) {
+    for ( i=0; i < n; i++ ) {
         str[i] = '0';
     }
 }
@@ -170,7 +126,6 @@ void calcUMin_strBin(char *str) {
  */
 int calcUMax(int totNumBits) {
 
-    // #TODO: make sure it can handle negative numbers
     int umax = 1 << totNumBits;     // left shift by the total number of bits,
     umax--;                         // minus one, to account for 0
     return umax;
@@ -191,7 +146,7 @@ void calcUMax_strHex(int umax, char *str) {
 void calcUMax_strBin(char *str) {
     //
     int i;
-    for ( i=0; i < totalNumberOfBits; i++ ) {
+    for ( i=0; i < n; i++ ) {
         str[i] = '1';
     }
 }
@@ -224,7 +179,7 @@ void calcTMin_strHex(int tmin, char *str) {
 void calcTMin_strBin(char *str) {
     // I'm only cheating myself :(
     int i;
-    for ( i=0; i < totalNumberOfBits; i++ ) {
+    for ( i=0; i < n; i++ ) {
         if (i==0) str[i] = '1';
         else str[i] = '0';
     }
@@ -245,7 +200,7 @@ void calcNegOne_strHex(char *str) {
  */
 void calcNegOne_strBin(char *str) {
     int i;
-    for ( i=0; i < totalNumberOfBits; i++ ) {
+    for ( i=0; i < n; i++ ) {
         str[i] = '1';
     }
 }
@@ -275,13 +230,11 @@ void calcTMax_strBin(char *str) {
 
     // I'm only cheating myself :(
     int i;
-    for ( i=0; i < totalNumberOfBits; i++ ) {
+    for ( i=0; i < n; i++ ) {
         if (i==0) str[i] = '0';
         else str[i] = '1';
     }
 }
-
-
 
 /**
  *  decToHex
@@ -296,11 +249,11 @@ void decToHex(int dec, char *str) { sprintf( str, "%X", dec); }
  */
 void printResults() {
 
-    printf("totalNumBits : %i\n ", totalNumberOfBits);
+    printf("totalNumBits : %i\n ", n);
 
     //printf("sizeof(unsigned int) : %lu \n", sizeof(unsigned int) );
 
-    printf("For %i bits:\n", totalNumberOfBits);
+    printf("For %i bits:\n", n);
     printf("Number\tDecimal\tHex\tBinary\n");
     printf("UMin\t%i\t0x%s\t%s\n", UMin, UMin_strHex, UMin_strBin );
     printf("UMax\t%i\t0x%s\t%s\n", UMax, UMax_strHex, UMax_strBin);
@@ -322,35 +275,56 @@ int calcBias(int totNumExpBits) {
 }
 
 /**
- *
+ * intToBinArray
+ * convert a dec int into binary int array
  */
-float calcM(int totalNumBits ) {
-    //1 + numFracBits
+void intToBinArray(int dec, int *binArray) {
+
+    int q = dec;  // quotient
+    int r=0;
+    int i=0;
+
+    // init array
+    for (i=0; i<sizeof(binArray); i++) binArray[i] = 0;
+
+    // calc bin int rep of dec int
+    // divide dec / 2, get modulus and assign to array
+    // continue to divide quotient by 2 until 0 is reached.
+    i = 0;
+    while ( q != 0 ) {
+        r = q % 2;
+        binArray[i] = r;
+        q = q / 2;
+        i++;
+    }
+
+    // tried getting schifty. didn't go so well.
+    //int i;
+    //for (i=0; i<sizeof(dec); i++) {
+
+    //    dec = dec >> 1;
+    //    if ( dec & 1 ) str[i] = '1';
+    //    else str[i] = '0';
+    //}
+
 }
 
 /**
- *
+ * printBinArray
+ * loop through the binary array and print out each integer
+ * restricted with number of bits
  */
-float calcV(float M, int E) {
-    //float V =
-}
+void printBinArray(int *binArray, int numBits) {
 
-char binStr[32];
-void convDecToBinStr(int dec) {
-    int q;
-    int r;
-    int i = 0;
-    q = dec/2;
-    r = dec%2;
-    binStr[i] = (char) r;
-    while ( q != 0  ) {
-        i++;
-        q = dec / 2;
-        r = dec % 2;
-        binStr[i] = (char) r;
+    int i;
+
+    // loop through array, printf each int,
+    for (i=numBits-1; i>=0; i--) {
+        printf("%i", binArray[i]);   // print binary string
     }
-
+    printf(" ");
 }
+
 
 /**
  *
@@ -358,57 +332,87 @@ void convDecToBinStr(int dec) {
 void printFloatingPointResults() {
     // V = (-1)^s * m * 2^E
 
+    int j;      // number of fraction bits
+    int k;      // number of exponent bits
+    int b;      // the bias
+    int e;      // value of exp
+    int f;      // value of frac
+    int E;      // E
+    float fV;   // fV
+    float M;    // M
+    float V;    // the Value
+
     printf("%s", "Please enter the number of exponent bits:\n");
-    scanf("%i", &totalNumberOfExponentBits);
+    scanf("%i", &k);
 
     // calc num frac bits
-    totalNumberOfFracBits = (totalNumberOfBits - totalNumberOfExponentBits) - 1;     // -1 for the Signed Bit
+    j = (n - k) - 1;     // -1 for the Signed Bit
 
-    printf("Positive floating point values for %i Exp bits and %i Frac bits:\n", totalNumberOfExponentBits, totalNumberOfFracBits );
-    printf("%s", "S Exp Frac Value");
-    printf("%s", "0 ");     // signed bit.
-    int eMax = 1 << totalNumberOfExponentBits;
-    int fMax = 1 << totalNumberOfFracBits;
+    printf("Positive floating point values for %i Exp bits and %i Frac bits:\n", k, j);
+    printf("%s", "S Exp Frac Value\n");
+    int eMax = (1 << k) - 1;
+    int fMax = (1 << j) - 1;
 
-    int i;
-    int j;
     // loop thru exp bits
-    for ( i=0; i<eMax; i++) {
-
-        convDecToBinStr(i);
-        printf("%s", binStr);
+    for ( e=0; e<=eMax; e++) {
 
         // loop thru frac bits
-        for (j=0; j<fMax; j++) {
+        for (f=0; f<=fMax; f++) {
 
-            convDecToBinStr(j);
-            printf("%s", binStr);
+            printf("%s", "0 ");     // signed bit.
+
+            intToBinArray(e, binArray);
+            printBinArray(binArray, k);
+            //printf("%i ", e );
+
+            intToBinArray(f, binArray);
+            printBinArray(binArray, j);
+            //printf("%i ", f );
 
             // check special cases
 
-            // if ( e == 0 && frac == 0 )
+            if ( e == eMax && f == 0 ) {
+                //if ( e == 0 && frac == 0 )
                 // V = inf;
-                printf("%s", "inf");
-            // if ( e == (2^k)
+                printf("inf");
+            } else if ( e == eMax ) {
+                //if ( e == (2^k)
                 // V == NaN
-                printf("%s", "NaN");
-
-            // if normalized
-            // if ( e != 0 && e != 2^k )
+                printf("NaN");
+            } else if ( e != 0 && e != eMax) {
+                // if ( e != 0 && e != 2^k )
+                //NORMALIZED
+                // calc bias    (2^(k-1))-1
+                b = ( 1 << (k - 1) ) - 1;     // left shift by the total number of bits,
+                // calc E       e - bias
+                E = e - b;
+                // calc fV      f / 2^j
+                //fV = f / ( 1<<j );
+                fV = (float)f / ( 1<<j );
+                // calc M
+                M = 1.00 + fV;
+                printf("%f", M);
+                // calc V
+                V = (float)(1<<E) * M;
+                //printf("%f", V);
+            } else {
+                // well, by now it must be denormalized then
+                // DENORMALIZED
+                // calc bias    (2^(k-1))-1
+                // calc E       1 - bias
                 // calc V
 
-            // denormalized
-            // else
                 // calc V
+                //printf("%f", V);
+                printf("DENORMALIZED");
+            }
+
+            printf("\n");
         }
+
 
     }
 
 }
-
-
-
-
-
 
 
